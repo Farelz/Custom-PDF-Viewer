@@ -14,7 +14,7 @@ const renderPage = num => {
   pageIsRendering = true;
 
   //Get Page
-  pdfDoc.getPage(num).then(page =>{
+  pdfDoc.getPage(num).then(page => {
     //Set Scale
     const viewport = page.getViewport({ scale });
     canvas.height = viewport.height;
@@ -23,13 +23,29 @@ const renderPage = num => {
     const renderCtx = {
       canvasContext: ctx,
       viewport
-    }
+    };
 
-    page.render(renderCtx).promise.then(() =>{
+    page.render(renderCtx).promise.then(() => {
       pageIsRendering = false;
-    });
-  });
 
+      if (pageNumIsPending !== null) {
+        renderPage(pageNumIsPending);
+        pageNumIsPending = null;
+      }
+    });
+
+    //Output Current Page
+    document.querySelector("#page-num").textContent = num;
+  });
+};
+
+// Check for pages rendering
+const queueRenderPage = num => {
+  if (pageIsRendering) {
+    pageNumIsPending = num;
+  } else {
+    renderPage(num);
+  }
 };
 
 //Get Document
@@ -37,4 +53,6 @@ pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
   pdfDoc = pdfDoc_;
 
   document.querySelector("#page-count").textContent = pdfDoc.numPages;
+
+  renderPage(pageNum);
 });
