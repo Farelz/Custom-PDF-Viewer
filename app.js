@@ -10,7 +10,27 @@ const scale = 1.5,
   ctx = canvas.getContext("2d");
 
 //Render The Page
-const renderPage = num => {};
+const renderPage = num => {
+  pageIsRendering = true;
+
+  //Get Page
+  pdfDoc.getPage(num).then(page =>{
+    //Set Scale
+    const viewport = page.getViewport({ scale });
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    const renderCtx = {
+      canvasContext: ctx,
+      viewport
+    }
+
+    page.render(renderCtx).promise.then(() =>{
+      pageIsRendering = false;
+    });
+  });
+
+};
 
 //Get Document
 pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
