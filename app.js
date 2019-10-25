@@ -48,6 +48,24 @@ const queueRenderPage = num => {
   }
 };
 
+//Show Prev Page
+const showPrevPage = () => {
+  if (pageNum <= 1) {
+    return;
+  }
+  pageNum--;
+  queueRenderPage(pageNum);
+};
+
+//Show Next Page
+const showNextPage = () => {
+  if (pageNum >= pdfDoc.numPages) {
+    return;
+  }
+  pageNum++;
+  queueRenderPage(pageNum);
+};
+
 //Get Document
 pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
   pdfDoc = pdfDoc_;
@@ -56,3 +74,7 @@ pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
 
   renderPage(pageNum);
 });
+
+//Button Events
+document.querySelector("#prev-page").addEventListener("click", showPrevPage);
+document.querySelector("#next-page").addEventListener("click", showNextPage);
