@@ -1,4 +1,4 @@
-const url = "docs/c4611_sample_explain.pdf";
+const url = "docs/c4611_sample_explainn.pdf";
 
 let pdfDoc = null,
   pageNum = 1,
@@ -67,13 +67,24 @@ const showNextPage = () => {
 };
 
 //Get Document
-pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
-  pdfDoc = pdfDoc_;
+pdfjsLib
+  .getDocument(url)
+  .promise.then(pdfDoc_ => {
+    pdfDoc = pdfDoc_;
 
-  document.querySelector("#page-count").textContent = pdfDoc.numPages;
+    document.querySelector("#page-count").textContent = pdfDoc.numPages;
 
-  renderPage(pageNum);
-});
+    renderPage(pageNum);
+  })
+  .catch(err => {
+    //Display Error
+    const div = document.createElement("div");
+    div.className = "error";
+    div.appendChild(document.createTextNode(err.message));
+    document.querySelector("body").insertBefore(div, canvas);
+    //Remove Top Bar
+    document.querySelector(".top-bar").getElementsByClassName.display = "none";
+  });
 
 //Button Events
 document.querySelector("#prev-page").addEventListener("click", showPrevPage);
